@@ -59,6 +59,13 @@ fn as_py(v: Value, py: Python) -> PyResult<Py<PyAny>> {
 
 #[pymethods]
 impl Message {
+    #[new]
+    fn py_new() -> PyResult<Self> {
+        Err(exceptions::PyNotImplementedError::new_err(
+            "Not implemented",
+        ))
+    }
+
     #[getter]
     fn params(&self, py: Python) -> PyResult<(Py<PyAny>, Py<PyAny>)> {
         let list = PyList::empty_bound(py);
@@ -111,5 +118,6 @@ fn decode(data: &str) -> PyResult<Message> {
 #[pymodule]
 fn fastcall(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(decode, m)?)?;
+    m.add_class::<Message>()?;
     Ok(())
 }

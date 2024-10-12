@@ -1,9 +1,9 @@
-from fastcall import decode
+from fastcall import FastCall, decode
 
-r = decode("""{
-    "jsonrpc": "2.0",
-    "id": "awbqw-9q9q9",
-    "method": "drink",
-    "params": {"hot": "coffee", "cold": "milk"}
-}""")
-print(r)
+app = FastCall(dev=True)
+
+
+@app
+def add(a: int, b: int) -> str:
+    """Adds two numbers."""
+    return str(a + b)
