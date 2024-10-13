@@ -30,8 +30,8 @@ def add(a: int, b: int) -> int:
 <td>
 
 ```python
-# sum_client.py is generated using:
-# $ fastcall gen server.py --python
+# sum_client module is generated with cli!
+
 from sum_client import Client
 
 client = Client("http://localhost:8787")
@@ -59,8 +59,23 @@ Fastcall supports:
 ...and more to come!
 
 ```python
+@dataclass
+class Pizza:
+  name: str
+  ingredients: list[str]
+
 @app
 def make_pizza(*ingredients: str) -> Pizza:
-    order = make_pizza(ingredients)
-    return Receipt(id=order.id, cost=order.cost)
+    return Pizza(name="Custom", ingredients=ingredients)
 ```
+
+<br />
+
+**🍩 Sugary typing for everything**. Say no more to raw JSON handling for the client, they're just ugly. Create bindings across different languages with just one server file.
+
+```sh
+$ fastcall gen server.py:app --bindings python
+```
+
+Don't worry. Type hints are everywhere, including docstrings.
+
