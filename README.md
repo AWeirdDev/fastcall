@@ -79,6 +79,8 @@ $ fastcall gen server.py:app --bindings python
 
 Don't worry. Type hints are everywhere, including docstrings.
 
+***
+
 ## 🧃 Examples
 Get started with a few examples.
 
@@ -106,4 +108,27 @@ def get_forecast(place: str) -> Forecast:
 ```
 
 </details>
+
+## 📚 Reference
+All the essentials. Technical:tm:.
+
+### RPCs and thoughts
+Fastcall supports:
+
+- JSON-RPC
+- FC-RPC *(custom)*
+
+Currently, there are great RPCs out there like gRPC (uses Protobuf), JSON-RPC (widely used and known) and more. I was wondering if we could make a custom one that's both **fast** and **light**? The answer is definitely a yes, and it involves Rust's `bincode`.
+
+Using a custom RPC schema, we could parse number-based data faster and more accurately. You don't want a long JSON array of ints and floats, that's just disgusting. 🤮
+
+To set the RPC implementation, simply add the `impl` parameter for the server constructor:
+
+```python
+# JSON-RPC (default)
+app = FastCall(impl="json")
+
+# FC-RPC (custom)
+app = FastCall(impl="fc")
+```
 
