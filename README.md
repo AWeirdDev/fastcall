@@ -16,7 +16,7 @@ Fastcall is an RPC server/client implementation written in Rust for Python. It's
 <td>
 
 ```python
-from fastcall FastCall
+from fastcall import FastCall
 
 app = FastCall()
 
@@ -78,4 +78,32 @@ $ fastcall gen server.py:app --bindings python
 ```
 
 Don't worry. Type hints are everywhere, including docstrings.
+
+## 🧃 Examples
+Get started with a few examples.
+
+<details>
+<summary><b>🌦️ Weather forecast</b></summary>
+
+```python
+from dataclasses import dataclass
+from fastcall import FastCall
+
+app = FastCall()
+
+@dataclass
+class Forecast:
+  description: str
+  precipitation: str
+  high_temp: float
+  low_temp: float
+
+@app
+def get_forecast(place: str) -> Forecast:
+    """Gets the weather forecast for a place."""
+    data = fake_api.get_weather(place)
+    return Forecast(data['desc'], data['prec'], data['high'], data['low'])
+```
+
+</details>
 
