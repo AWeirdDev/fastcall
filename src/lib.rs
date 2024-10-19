@@ -60,11 +60,11 @@ fn as_py(v: Value, py: Python) -> PyResult<Py<PyAny>> {
 #[pymethods]
 impl Message {
     #[new]
-    #[pyo3(signature = (kw = true))]
-    fn py_new(kw: bool) -> Self {
+    #[pyo3(signature = (id, *, kw = true))]
+    fn py_new(id: String, kw: bool) -> Self {
         Self {
             jsonrpc: "2.0".into(),
-            id: "1".into(),
+            id,
             method: "method".into(),
             params: {
                 if kw {

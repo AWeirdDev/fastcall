@@ -70,19 +70,19 @@ class Function(Generic[P, AnyT]):
     def __init__(self, fn: Callable[P, AnyT]):
         self.fn = fn
 
-    def message(self, *args: P.args, **kwargs: P.kwargs) -> Message:
+    def message(self, id: str, *args: P.args, **kwargs: P.kwargs) -> Message:
         if args:
-            msg = Message(kw=False)
+            msg = Message(id, kw=False)
             for itm in args:
                 msg.set_param("args", json.dumps(itm))
 
         elif kwargs:
-            msg = Message(kw=True)
+            msg = Message(id, kw=True)
             for k, v in kwargs.items():
                 msg.set_param(k, json.dumps(v))
 
         else:
-            msg = Message()
+            msg = Message(id)
 
         return msg
 

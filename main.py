@@ -11,4 +11,4 @@ def bake():
     print("baked.")
 
 
-bake.message()
+print(bake.message("123"))
