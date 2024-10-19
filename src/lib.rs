@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, str::FromStr};
 
 use pyo3::{
     exceptions,
@@ -60,14 +60,51 @@ fn as_py(v: Value, py: Python) -> PyResult<Py<PyAny>> {
 #[pymethods]
 impl Message {
     #[new]
-    fn py_new() -> PyResult<Self> {
-        Err(exceptions::PyNotImplementedError::new_err(
-            "Not implemented",
-        ))
+    #[pyo3(signature = (kw = true))]
+    fn py_new(kw: bool) -> Self {
+        Self {
+            jsonrpc: "2.0".into(),
+            id: "1".into(),
+            method: "method".into(),
+            params: {
+                if kw {
+                    Params::Object(HashMap::new())
+                } else {
+                    Params::Array(vec![])
+                }
+            },
+        }
+    }
+
+    fn set_param(&mut self, name: String, raw: &str) -> PyResult<()> {
+        let binding = Value::from_str(raw);
+        if let Err(e) = binding {
+            return Err(exceptions::PyRuntimeError::new_err(format!(
+                "Failed to parse JSON: {}",
+                e
+            )));
+        };
+
+        let value = binding.unwrap();
+
+        match &mut self.params {
+            Params::Object(o) => {
+                o.insert(name, value);
+            }
+            Params::Array(a) => {
+                a.push(value);
+            }
+            Params::String(ref s) => {
+                self.params = Params::Array(vec![Value::String(s.to_string()), value]);
+            }
+        }
+
+        Ok(())
     }
 
     #[getter]
-    fn params(&self, py: Python) -> PyResult<(Py<PyAny>, Py<PyAny>)> {
+    #[pyo3(name = "params")]
+    fn py_params(&self, py: Python) -> PyResult<(Py<PyAny>, Py<PyAny>)> {
         let list = PyList::empty_bound(py);
         let dict = PyDict::new_bound(py);
 
@@ -97,7 +134,7 @@ impl Message {
             self.id,
             self.method,
             {
-                let (args, kwargs) = self.params(py)?;
+                let (args, kwargs) = self.py_params(py)?;
                 format!("args: {}, kwargs: {}", args.to_string(), kwargs.to_string())
             }
         ))

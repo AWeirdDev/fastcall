@@ -1,9 +1,14 @@
-from fastcall import FastCall, decode
+from fastcall import FastCall
 
-app = FastCall(dev=True)
+fc = FastCall()
 
 
-@app
-def add(a: int, b: int) -> str:
-    """Adds two numbers."""
-    return str(a + b)
+@fc
+def bake():
+    """Literally bakes."""
+
+    print("baking")
+    print("baked.")
+
+
+bake.message()

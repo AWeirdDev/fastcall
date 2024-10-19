@@ -1,7 +1,11 @@
 import inspect
+import json
+from types import NoneType
 from typing import Callable, Generic, List, ParamSpec, TypeVar, Union
 
-AnyType = Union[str, int, float, bool, list, dict]
+from .fastcall import Message
+
+AnyType = Union[str, int, float, bool, list, dict, NoneType]
 
 P = ParamSpec("P")
 AnyT = TypeVar("AnyT", bound=AnyType)
@@ -40,6 +44,7 @@ class FastCall:
 
     def __call__(self, fn: Callable[P, AnyT]) -> "Function[P, AnyT]":
         params = inspect.signature(fn).parameters
+
         for name, param in params.items():
             if param.annotation == inspect.Parameter.empty:
                 e = TypeError(f"Parameter '{name}' must be annotated with a type")
@@ -55,6 +60,7 @@ class FastCall:
 
         fnc = Function(fn)
         self.fns.append(fnc)
+
         return fnc
 
 
@@ -63,6 +69,22 @@ class Function(Generic[P, AnyT]):
 
     def __init__(self, fn: Callable[P, AnyT]):
         self.fn = fn
+
+    def message(self, *args: P.args, **kwargs: P.kwargs) -> Message:
+        if args:
+            msg = Message(kw=False)
+            for itm in args:
+                msg.set_param("args", json.dumps(itm))
+
+        elif kwargs:
+            msg = Message(kw=True)
+            for k, v in kwargs.items():
+                msg.set_param(k, json.dumps(v))
+
+        else:
+            msg = Message()
+
+        return msg
 
     def __call__(self, *args: P.args, **kwargs: P.kwargs) -> AnyT:
         return self.fn(*args, **kwargs)

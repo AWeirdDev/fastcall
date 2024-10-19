@@ -1,3 +1,52 @@
+Hey there, `fastcall` is under active development. Here's what I have done... lol:
+
+- `Message()` implementation
+- `decode()` for decoding JSON-RPC messages
+- `FastCall()` server implementation (partially... yeah)
+
+A quick example:
+
+```python
+from fastcall import Message
+
+message = Message()
+message.set_param("price", '69.420')
+message.set_param("dish", '"Cheese Cake"')
+
+print(message)
+```
+
+...and you get a nice repr:
+
+```python
+Message(
+  jsonrpc="2.0",
+  id="1",
+  method="method",
+  params={
+    args: [],
+    kwargs: {'dish': 'Cheese Cake', 'price': 69.42}
+  }
+)
+```
+
+<br />
+
+I also made a simple decorator:
+
+```python
+app = FastCall()
+
+@app
+def add(a: int, b: int) -> int:
+    """Adds two numbers."""
+    return a + b
+
+add.fn(6 * 9, 6 + 9)  # 69
+```
+
+<details>
+
 # ☎️ fastcall
 Fastcall is an RPC server/client implementation written in Rust for Python. It's highly inspired by `ucall` and `fastapi` — I want the speed, typing, docstrings and that sweet developer experience (which google doesn't have one).
 
@@ -132,3 +181,4 @@ app = FastCall(impl="json")
 app = FastCall(impl="fc")
 ```
 
+</details>

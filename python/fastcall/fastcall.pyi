@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Dict, List, Tuple
 
 def decode(data: str) -> Any: ...
 
@@ -6,6 +6,8 @@ class Message:
     jsonrpc: str
     id: str
     method: str
-    params: Any
-    def __init__(self) -> None: ...
+    params: Tuple[List[Any], Dict[str, Any]]
+
+    def __init__(self, kw: bool = True) -> None: ...
     def __repr__(self) -> str: ...
+    def set_param(self, name: str, value: str) -> None: ...

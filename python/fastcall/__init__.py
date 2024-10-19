@@ -1,4 +1,4 @@
 from .core import FastCall
-from .fastcall import decode
+from .fastcall import Message, decode
 
-__all__ = ["FastCall", "decode"]
+__all__ = ["FastCall", "Message", "decode"]
